@@ -40,11 +40,18 @@ public class CustomerController {
         return new ResponseEntity(headers, HttpStatus.CREATED);
     }
 
-    @PutMapping
+    @PutMapping("{customerId}")
     public ResponseEntity updateCustomerById(@PathVariable("customerId") UUID customerId, @RequestBody Customer customer) {
         customerService.update(customerId, customer);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", "/api/v1/customers/" + customerId.toString());
         return new ResponseEntity(headers, HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping("{customerId}")
+    public ResponseEntity deleteById(@PathVariable("customerId") UUID customerId) {
+        customerService.delete(customerId);
+
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }
