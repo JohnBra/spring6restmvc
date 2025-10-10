@@ -11,4 +11,6 @@ public interface CustomerService {
     public Customer getById(UUID id);
 
     public Customer create(Customer customer);
+
+    public void update(UUID id, Customer customer);
 }
