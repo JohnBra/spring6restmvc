@@ -1,6 +1,8 @@
 package com.spryse.spring_6_rest_mvc.controllers;
 
+import com.spryse.spring_6_rest_mvc.models.Customer;
 import com.spryse.spring_6_rest_mvc.services.CustomerService;
+import com.spryse.spring_6_rest_mvc.services.CustomerServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -10,8 +12,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.UUID;
 
+import static org.hamcrest.core.Is.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(CustomerController.class)
 public class CustomerControllerTest {
@@ -22,10 +27,30 @@ public class CustomerControllerTest {
     @MockitoBean
     CustomerService customerService;
 
+    CustomerServiceImpl customerServiceImpl = new CustomerServiceImpl();
+
     @Test
     void getCustomerById() throws Exception {
-        mockMvc.perform(get("/api/v1/customers/" + UUID.randomUUID())
+        Customer testCustomer = customerServiceImpl.listAll().getFirst();
+
+        given(customerService.getById(any(UUID.class))).willReturn(testCustomer);
+
+        mockMvc.perform(get("/api/v1/customers/" + testCustomer.getId())
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id", is(testCustomer.getId().toString())))
+                .andExpect(jsonPath("$.customerName", is(testCustomer.getCustomerName())));
+    }
+
+    @Test
+    void testListCustomers() throws Exception {
+        given(customerService.listAll()).willReturn(customerServiceImpl.listAll());
+
+        mockMvc.perform(get("/api/v1/customers")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.length()", is(3)));
     }
 }
