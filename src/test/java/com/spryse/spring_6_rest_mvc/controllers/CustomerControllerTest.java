@@ -1,5 +1,6 @@
 package com.spryse.spring_6_rest_mvc.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spryse.spring_6_rest_mvc.models.Customer;
 import com.spryse.spring_6_rest_mvc.services.CustomerService;
 import com.spryse.spring_6_rest_mvc.services.CustomerServiceImpl;
@@ -16,6 +17,7 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(CustomerController.class)
@@ -23,6 +25,9 @@ public class CustomerControllerTest {
 
     @Autowired
     MockMvc mockMvc;
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     @MockitoBean
     CustomerService customerService;
@@ -52,5 +57,21 @@ public class CustomerControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.length()", is(3)));
+    }
+
+    @Test
+    void testCreateCustomer() throws Exception {
+        Customer customer = customerServiceImpl.listAll().getFirst();
+        customer.setVersion(null);
+        customer.setId(null);
+
+        given(customerService.create(any(Customer.class))).willReturn(customerServiceImpl.listAll().get(1));
+
+        mockMvc.perform(post("/api/v1/customers")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(customer)))
+                .andExpect(status().isCreated())
+                .andExpect(header().exists("Location"));
     }
 }
