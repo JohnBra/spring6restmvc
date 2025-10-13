@@ -1,6 +1,6 @@
 package com.spryse.spring_6_rest_mvc.controllers;
 
-import com.spryse.spring_6_rest_mvc.models.Beer;
+import com.spryse.spring_6_rest_mvc.models.BeerDTO;
 import com.spryse.spring_6_rest_mvc.services.BeerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,12 +23,12 @@ public class BeerController {
     private final BeerService beerService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<Beer> listBeers(){
+    public List<BeerDTO> listBeers(){
         return beerService.listBeers();
     }
 
     @RequestMapping(value = "{beerId}", method = RequestMethod.GET)
-    public Beer getBeerById(@PathVariable("beerId") UUID beerId){
+    public BeerDTO getBeerById(@PathVariable("beerId") UUID beerId){
 
         log.debug("Get Beer by Id - in controller. Id: " + beerId.toString());
 

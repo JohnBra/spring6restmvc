@@ -1,20 +1,20 @@
 package com.spryse.spring_6_rest_mvc.services;
 
-import com.spryse.spring_6_rest_mvc.models.Customer;
+import com.spryse.spring_6_rest_mvc.models.CustomerDTO;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface CustomerService {
-    public List<Customer> listAll();
+    public List<CustomerDTO> listAll();
 
-    public Customer getById(UUID id);
+    public CustomerDTO getById(UUID id);
 
-    public Customer create(Customer customer);
+    public CustomerDTO create(CustomerDTO customer);
 
-    public void update(UUID id, Customer customer);
+    public void update(UUID id, CustomerDTO customer);
 
     public void delete(UUID customerId);
 
-    public void patch(UUID customerId, Customer customer);
+    public void patch(UUID customerId, CustomerDTO customer);
 }
