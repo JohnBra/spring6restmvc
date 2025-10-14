@@ -3,11 +3,20 @@ package com.spryse.spring_6_rest_mvc.services;
 import com.spryse.spring_6_rest_mvc.models.BeerDTO;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface BeerService {
 
     List<BeerDTO> listBeers();
 
-    BeerDTO getBeerById(UUID id);
+    Optional<BeerDTO> getBeerById(UUID id);
+
+    BeerDTO saveNewBeer(BeerDTO beer);
+
+    void updateBeerById(UUID beerId, BeerDTO beer);
+
+    void deleteById(UUID beerId);
+
+    void patchBeerById(UUID beerId, BeerDTO beer);
 }
