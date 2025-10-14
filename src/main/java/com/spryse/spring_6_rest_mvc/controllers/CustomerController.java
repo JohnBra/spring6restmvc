@@ -19,16 +19,16 @@ import java.util.UUID;
 public class CustomerController {
     private final CustomerService customerService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping()
     public List<CustomerDTO> listCustomers() {
         return customerService.listAll();
     }
 
-    @RequestMapping(value = "{customerId}", method = RequestMethod.GET)
+    @GetMapping(value = "{customerId}")
     public CustomerDTO getCustomerById(@PathVariable("customerId") UUID customerId) {
         log.debug("Get Customer by ID - in controller. Id: " + customerId.toString());
 
-        return customerService.getById(customerId);
+        return customerService.getById(customerId).orElseThrow(NotFoundException::new);
     }
 
     @PostMapping
