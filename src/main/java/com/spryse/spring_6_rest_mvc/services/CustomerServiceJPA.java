@@ -1,5 +1,6 @@
 package com.spryse.spring_6_rest_mvc.services;
 
+import com.spryse.spring_6_rest_mvc.entities.Customer;
 import com.spryse.spring_6_rest_mvc.mappers.CustomerMapper;
 import com.spryse.spring_6_rest_mvc.models.CustomerDTO;
 import com.spryse.spring_6_rest_mvc.repositories.CustomerRepository;
@@ -33,22 +34,29 @@ public class CustomerServiceJPA implements CustomerService {
     }
 
     @Override
-    public CustomerDTO create(CustomerDTO customer) {
-        return null;
+    public CustomerDTO create(CustomerDTO customerDTO) {
+        Customer customer = customerRepository.save(customerMapper.customerDtoToCustomer(customerDTO));
+        return customerMapper.customerToCustomerDTO(customer);
     }
 
     @Override
-    public void update(UUID id, CustomerDTO customer) {
-
+    public void update(UUID id, CustomerDTO customerDTO) {
+        customerRepository.findById(id).ifPresent(foundCustomer -> {
+            foundCustomer.setCustomerName(customerDTO.getCustomerName());
+            customerRepository.save(foundCustomer);
+        });
     }
 
     @Override
-    public void delete(UUID customerId) {
-
+    public void delete(UUID id) {
+        customerRepository.deleteById(id);
     }
 
     @Override
-    public void patch(UUID customerId, CustomerDTO customer) {
-
+    public void patch(UUID id, CustomerDTO customerDTO) {
+        customerRepository.findById(id).ifPresent(foundCustomer -> {
+            foundCustomer.setCustomerName(customerDTO.getCustomerName());
+            customerRepository.save(foundCustomer);
+        });
     }
 }
