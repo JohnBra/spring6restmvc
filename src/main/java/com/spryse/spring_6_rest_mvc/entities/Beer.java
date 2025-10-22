@@ -29,6 +29,7 @@ public class Beer {
     @Version
     private Integer version;
     private String beerName;
+    @JdbcTypeCode(value = SqlTypes.SMALLINT)
     private BeerStyle beerStyle;
     private String upc;
     private Integer quantityOnHand;
